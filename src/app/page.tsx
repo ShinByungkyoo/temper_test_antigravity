@@ -131,7 +131,8 @@ export default function Home() {
     );
   }
 
-  if (currentStep >= questions.length && calculatedResult) {
+  if (currentStep >= questions.length) {
+    if (!calculatedResult) return null;
     return (
       <main className="min-h-screen bg-white flex flex-col font-sans text-black p-6 md:p-12">
         <div className="max-w-5xl mx-auto w-full">
