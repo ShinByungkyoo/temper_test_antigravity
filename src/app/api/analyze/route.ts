@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" }); // Using 2.5 flash based on API key tier
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); // Using stable 1.5 flash
 
     const prompt = `
       당신은 창의력 및 잠재력 개발 전문 분석가입니다.
