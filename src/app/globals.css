@@ -1,0 +1,70 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Utilities for Brutalist Design */
+@layer utilities {
+  .border-grid {
+    @apply border border-black;
+  }
+  .border-b-grid {
+    @apply border-b border-black;
+  }
+  .border-r-grid {
+    @apply border-r border-black;
+  }
+  .marquee-container {
+    overflow: hidden;
+    white-space: nowrap;
+    display: flex;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    padding: 0.5rem 0;
+    background: #fff;
+  }
+  .marquee-content {
+    display: inline-flex;
+    animation: marquee 20s linear infinite;
+  }
+  .marquee-text {
+    font-weight: 800;
+    font-size: 1.25rem;
+    letter-spacing: -0.05em;
+    padding: 0 1rem;
+    text-transform: uppercase;
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+}
+
+/* Override prose to match stark aesthetic */
+.prose {
+  --tw-prose-body: #000;
+  --tw-prose-headings: #000;
+  --tw-prose-lead: #000;
+  --tw-prose-links: #000;
+  --tw-prose-bold: #000;
+  --tw-prose-counters: #000;
+  --tw-prose-bullets: #000;
+  --tw-prose-hr: #000;
+  --tw-prose-quotes: #000;
+  --tw-prose-quote-borders: #000;
+  --tw-prose-captions: #000;
+  --tw-prose-code: #000;
+  --tw-prose-pre-code: #fff;
+  --tw-prose-pre-bg: #000;
+}
