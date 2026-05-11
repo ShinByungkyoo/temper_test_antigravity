@@ -1,5 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -7,41 +9,52 @@ export async function POST(req: Request) {
 
     const apiKey = process.env.GOOGLE_API_KEY;
     if (!apiKey) {
-      return Response.json({ error: "서버에 API 키가 설정되지 않았습니다. Vercel 설정을 확인해주세요." }, { status: 500 });
+      return Response.json({ error: "API Key missing in Vercel settings." }, { status: 500 });
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    // Use the latest stable flash model
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" }); 
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const prompt = `
-      당신은 창의력 및 잠재력 개발 전문 분석가입니다.
-      사용자가 방금 진단 테스트를 마쳤습니다. 다음은 사용자의 최종 결과입니다:
-      - 우세 유형: ${typeName} (${maxSymbol})
-      - 점수 분포: ☆ (주도형M): ${scores["☆"] || 0}점, ♥ (S섬세형): ${scores["♥"] || 0}점, ▲ (비범형N): ${scores["▲"] || 0}점, ♬ (C은둔형): ${scores["♬"] || 0}점
-
-      이 점수 분포와 우세 유형을 바탕으로 사용자의 **창의력(Creativity)** 관점에 초점을 맞춘 심층 진단 리포트를 작성해주세요. 
-      아래 세 가지 섹션으로 나누어 작성해주되, 창의적 잠재력을 일깨워주는 통찰력 있고 영감을 주는 어조로 작성하세요. (각 섹션은 1~2단락 내외)
-      1. 창의력 관점에서의 성격 분석 (현재의 창의적 강점과 고유의 아이디어 발상 스타일)
-      2. 창의력 발현을 방해할 수 있는 요소 및 주의할 점
-      3. 창의력을 비약적으로 향상시키기 위한 구체적인 실천 조언
-      반드시 마크다운 형식(Markdown)으로 응답을 작성해 주세요.
+      당신은 창의력 개발 전문 분석가입니다. 다음 결과를 바탕으로 창의력 중심의 심층 리포트를 마크다운 형식으로 작성하세요.
+      - 유형: ${typeName} (${maxSymbol})
+      - 점수: ☆(M):${scores["☆"] || 0}, ♥(S):${scores["♥"] || 0}, ▲(N):${scores["▲"] || 0}, ♬(C):${scores["♬"] || 0}
+      
+      작성 가이드:
+      1. 창의적 강점 분석
+      2. 발현 방해 요소 및 주의점
+      3. 향상 조언
     `;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+    const result = await model.generateContentStream(prompt);
+    
+    // Create a readable stream to pipe to the response
+    const stream = new ReadableStream({
+      async start(controller) {
+        const encoder = new TextEncoder();
+        try {
+          for await (const chunk of result.stream) {
+            const chunkText = chunk.text();
+            if (chunkText) {
+              controller.enqueue(encoder.encode(chunkText));
+            }
+          }
+          controller.close();
+        } catch (e: any) {
+          controller.error(e);
+        }
+      },
+    });
 
-    if (!text) {
-      throw new Error("AI가 응답을 생성하지 못했습니다.");
-    }
+    return new Response(stream, {
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Transfer-Encoding": "chunked",
+      },
+    });
 
-    return Response.json({ result: text });
   } catch (error: any) {
-    console.error("AI API Error:", error);
-    return Response.json({ 
-      error: "AI 분석 중 오류가 발생했습니다.", 
-      details: error.message 
-    }, { status: 500 });
+    console.error("AI Streaming Error:", error);
+    return Response.json({ error: "분석 중 오류 발생", details: error.message }, { status: 500 });
   }
 }

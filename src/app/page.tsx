@@ -89,6 +89,7 @@ export default function Home() {
   const fetchAiResult = async (res: any) => {
     setIsLoadingAi(true);
     setAiError(null);
+    setAiResult(""); // Initialize as empty for streaming
     try {
       const response = await fetch('/api/analyze', {
         method: 'POST',
@@ -99,14 +100,26 @@ export default function Home() {
           typeName: res.typeName
         }),
       });
-      const data = await response.json();
-      if (response.ok) {
-        setAiResult(data.result);
-      } else {
-        setAiError(data.error || "분석 결과를 가져오는 중 오류가 발생했습니다.");
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "분석 결과를 가져오는 중 오류가 발생했습니다.");
       }
-    } catch (err) {
-      setAiError("서버와의 통신에 실패했습니다.");
+
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error("분석 스트림을 시작할 수 없습니다.");
+
+      const decoder = new TextDecoder();
+      
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value);
+        setAiResult(prev => (prev || "") + chunk);
+      }
+    } catch (err: any) {
+      console.error("AI Fetch Error:", err);
+      setAiError(err.message || "서버와의 통신에 실패했습니다.");
     } finally {
       setIsLoadingAi(false);
     }
