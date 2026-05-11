@@ -197,9 +197,15 @@ export default function Home() {
 
       <div className="flex-1 max-w-4xl w-full mx-auto p-6 md:p-12 flex flex-col">
         <div className="text-sm font-black mb-4 uppercase tracking-widest opacity-50">[ {currentStep + 1} / {questions.length} ]</div>
-        <div className="border-4 border-black p-8 md:p-12 mb-12 bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+        <div className="border-4 border-black p-8 md:p-12 mb-8 bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
           <h2 className="text-3xl font-black leading-tight tracking-tight italic">{currentStep + 1}. {currentQuestion.text}</h2>
         </div>
+
+        {currentQuestion.imageUrl && (
+          <div className="mb-12 border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
+            <img src={currentQuestion.imageUrl} alt="Question Image" className="w-full h-auto object-cover" />
+          </div>
+        )}
 
         <div className="grid md:grid-cols-2 gap-px bg-black border-4 border-black">
           {Object.entries(currentQuestion.choices).map(([choiceKey, choiceText], index) => (
