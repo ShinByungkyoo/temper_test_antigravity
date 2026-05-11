@@ -1,0 +1,54 @@
+--- Head ---
+   Unnamed: 0 답변①  Unnamed: 2 답변② Unnamed: 4 답변③  Unnamed: 6 답변④ Unnamed: 8
+0        질문 1   ♥         NaN   ☆        NaN   ▲         NaN   ♬        NaN
+1        질문 2   ☆         NaN   ♬        NaN   ♥         NaN   ▲        NaN
+2        질문 3   ▲         NaN   ☆        NaN   ♥         NaN   ♬        NaN
+3        질문 4   ▲         NaN   ☆        NaN   ♬         NaN   ♥        NaN
+4        질문 5   ▲         NaN   ♥        NaN   ♬         NaN   ☆        NaN
+5        질문 6   ☆         NaN   ♬        NaN   ♥         NaN   ▲        NaN
+6        질문 7   ♥         NaN   ☆        NaN   ▲         NaN   ♬        NaN
+7        질문 8   ♬         NaN   ▲        NaN   ☆         NaN   ♥        NaN
+8        질문 9   ♬         NaN   ☆        NaN   ♥         NaN   ▲        NaN
+9       질문 10   ♬         NaN   ☆        NaN   ▲         NaN   ♥        NaN
+10      질문 11   ♥         NaN   ☆        NaN   ♬         NaN   ▲        NaN
+11      질문 12   ♥         NaN   ♬        NaN   ▲         NaN   ☆        NaN
+12      질문 13   ▲         NaN   ♬        NaN   ☆         NaN   ♥        NaN
+13      질문 14   ♬         NaN   ☆        NaN   ▲         NaN   ♥        NaN
+14      질문 15   ☆         NaN   ♬        NaN   ♥         NaN   ▲        NaN
+15      질문 16   ☆         NaN   ♬        NaN   ♥         NaN   ▲        NaN
+16      질문 17   ▲         NaN   ♬        NaN   ♥         NaN   ☆        NaN
+17      질문 18   ☆         NaN   ▲        NaN   ♥         NaN   ♬        NaN
+18      질문 19   ♥         NaN   ☆        NaN   ▲         NaN   ♬        NaN
+19      질문 20   ♬         NaN   ♥        NaN   ☆         NaN   ▲        NaN
+
+--- Columns ---
+Index(['Unnamed: 0', '답변①', 'Unnamed: 2', '답변②', 'Unnamed: 4', '답변③',
+       'Unnamed: 6', '답변④', 'Unnamed: 8'],
+      dtype='str')
+
+--- Values ---
+Unnamed: 0: <StringArray>
+[ '질문 1',  '질문 2',  '질문 3',  '질문 4',  '질문 5',  '질문 6',  '질문 7',  '질문 8',
+  '질문 9', '질문 10', '질문 11', '질문 12', '질문 13', '질문 14', '질문 15', '질문 16',
+ '질문 17', '질문 18', '질문 19', '질문 20',     nan]
+Length: 21, dtype: str
+답변①: <StringArray>
+['♥', '☆', '▲', '♬', nan, '주도형M', '비범형N']
+Length: 7, dtype: str
+Unnamed: 2: [nan]
+답변②: <StringArray>
+['☆', '♬', '♥', '▲', nan, '점']
+Length: 6, dtype: str
+Unnamed: 4: <StringArray>
+[nan, '주도형', '섬세형', '비범형', '은둔형']
+Length: 5, dtype: str
+답변③: <StringArray>
+['▲', '♥', '♬', '☆', nan]
+Length: 5, dtype: str
+Unnamed: 6: [nan]
+답변④: <StringArray>
+['♬', '▲', '♥', '☆', nan]
+Length: 5, dtype: str
+Unnamed: 8: <StringArray>
+[nan, 'S섬세형', 'C은둔형']
+Length: 3, dtype: str
