@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); 
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" }); 
 
     const prompt = `
       당신은 창의력 개발 전문 분석가입니다. 다음 진단 결과를 바탕으로 마크다운 형식의 심층 리포트를 작성하세요.
