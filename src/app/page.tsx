@@ -87,22 +87,15 @@ export default function Home() {
         }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || "분석 실패");
-      }
-
-      const reader = response.body?.getReader();
-      if (!reader) throw new Error("스트림 실패");
-      const decoder = new TextDecoder();
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value);
-        setAiResult(prev => (prev || "") + chunk);
+      const data = await response.json();
+      if (response.ok) {
+        setAiResult(data.result);
+      } else {
+        setAiError(data.error + (data.details ? ` (${data.details})` : ""));
       }
     } catch (err: any) {
-      setAiError("AI 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      console.error("AI Fetch Error:", err);
+      setAiError("서버와의 통신에 실패했습니다. 인터넷 연결이나 서버 상태를 확인해주세요.");
     } finally {
       setIsLoadingAi(false);
     }
