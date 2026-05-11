@@ -184,20 +184,21 @@ export default function Home() {
             <div className="flex flex-col md:flex-row gap-px bg-black border border-black mb-12">
               <div className="flex-1 bg-white p-8">
                 <div className="text-xs font-bold uppercase tracking-widest mb-4">Core Type</div>
-                <div className="text-5xl font-black tracking-tighter mb-2">{calculatedResult.maxSymbol}</div>
-                <div className="text-3xl font-bold">{calculatedResult.typeName}</div>
+                <div className="text-5xl font-black tracking-tighter mb-2">{calculatedResult?.maxSymbol || "N/A"}</div>
+                <div className="text-3xl font-bold">{calculatedResult?.typeName || "Unknown Type"}</div>
               </div>
               
               <div className="flex-[2] bg-white p-8">
                 <div className="text-xs font-bold uppercase tracking-widest mb-6">Score Distribution</div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
-                  {Object.entries(calculatedResult.scores).map(([sym, val]) => {
-                    const maxVal = Math.max(...Object.values(calculatedResult.scores as Record<string, number>));
+                  {calculatedResult && Object.entries(calculatedResult.scores).map(([sym, val]) => {
+                    const scoresArr = Object.values(calculatedResult.scores) as number[];
+                    const maxVal = scoresArr.length > 0 ? Math.max(...scoresArr) : 1;
                     const percentage = maxVal > 0 ? ((val as number) / maxVal) * 100 : 0;
                     return (
                       <div key={sym} className="flex flex-col">
                         <div className="flex justify-between text-sm font-bold mb-2">
-                          <span className="tracking-widest uppercase">{sym} {rawData.types[sym]}</span>
+                          <span className="tracking-widest uppercase">{sym} {rawData.types[sym] || ""}</span>
                           <span>{val as number} PT</span>
                         </div>
                         <div className="w-full border border-black h-4 bg-white relative">
@@ -228,10 +229,15 @@ export default function Home() {
                   </button>
                 </div>
               ) : aiResult ? (
-                <div className="prose prose-black max-w-none prose-h1:text-3xl prose-h1:font-extrabold prose-h2:text-2xl prose-h2:font-bold prose-h2:border-b-2 prose-h2:border-black prose-h2:pb-2 prose-p:text-base prose-p:leading-relaxed prose-p:font-medium p-8 border border-black bg-white">
-                  <ReactMarkdown>{aiResult}</ReactMarkdown>
+                <div className="p-8 border border-black bg-white font-medium leading-relaxed whitespace-pre-wrap">
+                  {/* Safely render AI text directly without ReactMarkdown initially to check for stability */}
+                  {aiResult}
                 </div>
-              ) : null}
+              ) : (
+                <div className="p-8 border border-dashed border-black text-center italic text-sm">
+                  분석 대기 중...
+                </div>
+              )}
             </div>
 
             <div className="absolute -top-3 -left-3 w-6 h-6 border-r border-b border-black bg-white"></div>
