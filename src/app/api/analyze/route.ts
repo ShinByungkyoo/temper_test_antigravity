@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function POST(req: Request) {
@@ -8,17 +7,18 @@ export async function POST(req: Request) {
 
     const apiKey = process.env.GOOGLE_API_KEY;
     if (!apiKey) {
-      return NextResponse.json({ error: "API key is not configured on the server." }, { status: 500 });
+      return Response.json({ error: "서버에 API 키가 설정되지 않았습니다. Vercel 설정을 확인해주세요." }, { status: 500 });
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); // Using stable 1.5 flash
+    // Use the latest stable flash model
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" }); 
 
     const prompt = `
       당신은 창의력 및 잠재력 개발 전문 분석가입니다.
       사용자가 방금 진단 테스트를 마쳤습니다. 다음은 사용자의 최종 결과입니다:
       - 우세 유형: ${typeName} (${maxSymbol})
-      - 점수 분포: ☆ (주도형M): ${scores["☆"]}점, ♥ (S섬세형): ${scores["♥"]}점, ▲ (비범형N): ${scores["▲"]}점, ♬ (C은둔형): ${scores["♬"]}점
+      - 점수 분포: ☆ (주도형M): ${scores["☆"] || 0}점, ♥ (S섬세형): ${scores["♥"] || 0}점, ▲ (비범형N): ${scores["▲"] || 0}점, ♬ (C은둔형): ${scores["♬"] || 0}점
 
       이 점수 분포와 우세 유형을 바탕으로 사용자의 **창의력(Creativity)** 관점에 초점을 맞춘 심층 진단 리포트를 작성해주세요. 
       아래 세 가지 섹션으로 나누어 작성해주되, 창의적 잠재력을 일깨워주는 통찰력 있고 영감을 주는 어조로 작성하세요. (각 섹션은 1~2단락 내외)
@@ -32,9 +32,16 @@ export async function POST(req: Request) {
     const response = await result.response;
     const text = response.text();
 
-    return NextResponse.json({ result: text });
+    if (!text) {
+      throw new Error("AI가 응답을 생성하지 못했습니다.");
+    }
+
+    return Response.json({ result: text });
   } catch (error: any) {
     console.error("AI API Error:", error);
-    return NextResponse.json({ error: "Failed to generate AI result" }, { status: 500 });
+    return Response.json({ 
+      error: "AI 분석 중 오류가 발생했습니다.", 
+      details: error.message 
+    }, { status: 500 });
   }
 }
